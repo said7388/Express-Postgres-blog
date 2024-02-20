@@ -11,7 +11,6 @@ import postRouter from './routers/post.route';
 import reactionRouter from './routers/reaction.route';
 
 const app: Application = express();
-const port = process.env.PORT || 4000;
 
 // Use middleware 
 dotenv.config();
@@ -29,7 +28,7 @@ app.use(limiter);
 
 // App Home Route
 app.get('/', async (req: Request, res: Response) => {
-  return res.send("Welcome to our Blog!");
+  return res.status(200).send("Welcome to our Blog!");
 });
 
 // Other App routes
@@ -44,7 +43,4 @@ app.use(notFoundHandler);
 // global error handler
 app.use(globalErrorHandler);
 
-// Start the server
-app.listen(port, () => {
-  console.log(`Server listening on port ${port}`);
-});
+export default app;
