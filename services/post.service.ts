@@ -12,8 +12,9 @@ export const allPostService = async (req: Request, res: Response) => {
 
   try {
     const query = `
-      SELECT * 
-      FROM posts 
+      SELECT p.*, u.name AS author
+      FROM posts p
+      INNER JOIN Users u ON p.author_id = u.id
       WHERE title ILIKE $1
       ORDER BY id
       LIMIT $2 OFFSET $3;
@@ -46,7 +47,12 @@ export const singlePostService = async (req: Request, res: Response) => {
   const { id } = req.params;
 
   try {
-    const query = `SELECT * FROM posts WHERE id = $1;`;
+    const query = `
+    SELECT p.*, u.name AS author
+    FROM posts p
+    INNER JOIN Users u ON p.author_id = u.id
+    WHERE p.id = $1;
+    `;
     const result = await connection.query(query, [id]);
     const post = result.rows[0];
 
@@ -62,7 +68,7 @@ export const singlePostService = async (req: Request, res: Response) => {
       data: post,
     });
   } catch (error) {
-    // console.log(error)
+    console.log(error)
     return res.status(500).json({
       success: false,
       message: "Something went wrong! Please try again."
@@ -77,7 +83,12 @@ export const userPostsService = async (req: Request, res: Response) => {
   const skip = (Number(page) - 1) * Number(limit);
 
   try {
-    let query = `SELECT * FROM Posts WHERE author_id = $1`;
+    let query = `
+    SELECT p.*, u.name AS author
+    FROM Posts p
+    INNER JOIN Users u ON p.author_id = u.id
+    WHERE p.author_id = $1
+    `;
     const params: any = [user.id];
 
     if (search) {
@@ -134,7 +145,7 @@ export const createPostService = async (req: Request, res: Response) => {
   }
 };
 
-// Update a post by id.
+// Update a post by id and only author of the post can update it.
 export const updatePostService = async (req: Request, res: Response) => {
   const id = parseInt(req.params.id);
   const { title, content } = req.body;
@@ -176,7 +187,7 @@ export const updatePostService = async (req: Request, res: Response) => {
   };
 };
 
-// Delete a post by id.
+// Delete a post by id and only author of the post can delete it.
 export const deletePostService = async (req: Request, res: Response) => {
   const id = parseInt(req.params.id);
   const user = req.user as User;
