@@ -1,6 +1,6 @@
 import { Request, Response } from "express";
 import { loginService, registrationService } from '../services/auth.service';
-import { loginSchema } from '../validation-schema/auth';
+import { loginSchema } from '../validation-schema/auth.schema';
 
 /**
  * ROUTE: /api/auth/registration

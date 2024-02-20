@@ -28,8 +28,8 @@ CREATE TABLE IF NOT EXISTS comments (
   updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
 
--- Create 'likes' table
-CREATE TABLE IF NOT EXISTS likes (
+-- Create 'reactions' table
+CREATE TABLE IF NOT EXISTS reactions (
   id SERIAL PRIMARY KEY,
   user_id INT NOT NULL REFERENCES users(id),
   post_id INT NOT NULL REFERENCES posts(id),

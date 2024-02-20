@@ -1,6 +1,6 @@
 import { Request, Response } from "express";
 import { allPostService, createPostService, deletePostService, singlePostService, updatePostService, userPostsService } from "../services/post.service";
-import { createPostSchema, updatePostSchema } from "../validation-schema/post";
+import { createPostSchema, updatePostSchema } from "../validation-schema/post.schema";
 
 /**
  * ROUTE: /api/posts

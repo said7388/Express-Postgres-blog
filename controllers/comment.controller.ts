@@ -1,6 +1,6 @@
 import { Request, Response } from "express";
 import { deleteCommentService, newCommentService, postCommentsService, updateCommentService } from "../services/comment.service";
-import { createCommentSchema, updateCommentSchema } from "../validation-schema/comment";
+import { createCommentSchema, updateCommentSchema } from "../validation-schema/comment.schema";
 
 /**
  * ROUTE: /api/comments/:postId

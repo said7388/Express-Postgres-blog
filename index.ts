@@ -5,6 +5,7 @@ import rateLimit from 'express-rate-limit';
 import authRouter from './routers/auth.route';
 import commentRouter from './routers/comment.route';
 import postRouter from './routers/post.route';
+import reactionRouter from './routers/reaction.route';
 
 const app: Application = express();
 const port = process.env.PORT || 4000;
@@ -31,7 +32,7 @@ app.get('/', async (req: Request, res: Response) => {
 app.use('/api/auth', authRouter);
 app.use('/api/posts', postRouter);
 app.use('/api/comments', commentRouter);
-
+app.use('/api/reactions', reactionRouter);
 
 // catch 404 and forward to error handler
 app.use((req: Request, res: Response) => {
