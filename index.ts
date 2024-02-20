@@ -2,6 +2,9 @@ import bodyParser from 'body-parser';
 import dotenv from 'dotenv';
 import express, { Application, Request, Response } from 'express';
 import rateLimit from 'express-rate-limit';
+import morgan from 'morgan';
+import { globalErrorHandler } from './middleware/global-error-handler';
+import { notFoundHandler } from './middleware/not-found-handler';
 import authRouter from './routers/auth.route';
 import commentRouter from './routers/comment.route';
 import postRouter from './routers/post.route';
@@ -14,6 +17,7 @@ const port = process.env.PORT || 4000;
 dotenv.config();
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(express.json());
+app.use(morgan("dev")); // API request logger
 
 // Use Rate limiter for secure server
 const limiter = rateLimit({
@@ -35,18 +39,10 @@ app.use('/api/comments', commentRouter);
 app.use('/api/reactions', reactionRouter);
 
 // catch 404 and forward to error handler
-app.use((req: Request, res: Response) => {
-  return res.status(404).json({
-    message: "No such route exists!"
-  })
-});
+app.use(notFoundHandler);
 
-// error handler
-app.use((err: Error, req: Request, res: Response) => {
-  return res.status(500).json({
-    message: "Something went wrong"
-  })
-});
+// global error handler
+app.use(globalErrorHandler);
 
 // Start the server
 app.listen(port, () => {
