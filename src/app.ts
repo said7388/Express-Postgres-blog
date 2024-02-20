@@ -2,7 +2,6 @@ import bodyParser from 'body-parser';
 import dotenv from 'dotenv';
 import express, { Application, Request, Response } from 'express';
 import rateLimit from 'express-rate-limit';
-import morgan from 'morgan';
 import { globalErrorHandler } from './middleware/global-error-handler';
 import { notFoundHandler } from './middleware/not-found-handler';
 import authRouter from './routers/auth.route';
@@ -16,7 +15,7 @@ const app: Application = express();
 dotenv.config();
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(express.json());
-app.use(morgan("dev")); // API request logger
+// app.use(morgan("dev")); // API request logger
 
 // Use Rate limiter for secure server
 const limiter = rateLimit({
