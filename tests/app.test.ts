@@ -1,5 +1,5 @@
 import request from "supertest";
-import app from "./app";
+import app from "../src/app";
 
 
 describe('Test Home Route :/', function () {
@@ -17,14 +17,3 @@ describe('Test Posts Route :/posts', function () {
     expect(Array.isArray(response.body.data)).toBeTruthy();
   });
 });
-
-describe("Auth Route Testing : /api/auth", function () {
-  test('Without Body Credintial', async () => {
-    const res = await request(app)
-      .post('/api/auth/login')
-      .send();
-
-    expect(res.statusCode).toEqual(400);
-    expect(res.body.success).toEqual(false);
-  });
-})

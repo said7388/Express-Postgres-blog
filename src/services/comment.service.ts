@@ -1,5 +1,5 @@
 import { Request, Response } from "express";
-import { connection } from "../config/db.config";
+import { connection } from "../../config/db.config";
 import { User } from "../models/user.model";
 import { queryTypes } from "../types";
 

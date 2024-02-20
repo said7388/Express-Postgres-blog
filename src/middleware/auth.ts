@@ -1,6 +1,6 @@
 import { NextFunction, Request, Response } from "express";
 import jwt from "jsonwebtoken";
-import { connection } from "../config/db.config";
+import { connection } from "../../config/db.config";
 import { registrationSchema } from "../validation-schema/auth.schema";
 
 // Verify JWT token

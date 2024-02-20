@@ -1,7 +1,7 @@
 import bcrypt from 'bcrypt';
 import { Request, Response } from "express";
 import jwt from "jsonwebtoken";
-import { connection } from "../config/db.config";
+import { connection } from "../../config/db.config";
 
 // Register a new user with secure password.
 export const registrationService = async (req: Request, res: Response) => {
