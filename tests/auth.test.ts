@@ -130,7 +130,7 @@ describe("Test suites for Login Route : /api/auth/login", function () {
     expect(res.body.message).toEqual(`Invalid password!`);
   });
 
-  test("Success with valid credintial", async () => {
+  test("should success with valid credintial", async () => {
     const res = await request(app)
       .post('/api/auth/login')
       .send({
