@@ -2,8 +2,8 @@ import request from "supertest";
 import app from "../src/app";
 
 // All test cases for user registration
-describe("Register Route Testing : /api/auth/registration", function () {
-  test('Without Body Credintial', async () => {
+describe("Test suites for Register Route : /api/auth/registration", function () {
+  test('Should get an error for payload credintials.', async () => {
     const res = await request(app)
       .post('/api/auth/registration')
       .send();
@@ -12,7 +12,7 @@ describe("Register Route Testing : /api/auth/registration", function () {
     expect(res.body.success).toEqual(false);
   });
 
-  test("With only email", async () => {
+  test("Should get an error for only email in payload.", async () => {
     const res = await request(app)
       .post('/api/auth/registration')
       .send({
@@ -23,7 +23,7 @@ describe("Register Route Testing : /api/auth/registration", function () {
     expect(res.body.message).toEqual(`"name" is required`);
   });
 
-  test("With only name", async () => {
+  test("Should get an error for only name in payload.", async () => {
     const res = await request(app)
       .post('/api/auth/registration')
       .send({
@@ -34,7 +34,7 @@ describe("Register Route Testing : /api/auth/registration", function () {
     expect(res.body.message).toEqual(`"email" is required`);
   });
 
-  test("With name and email", async () => {
+  test("Should get an error for name and email in payload.", async () => {
     const res = await request(app)
       .post('/api/auth/registration')
       .send({
@@ -46,7 +46,7 @@ describe("Register Route Testing : /api/auth/registration", function () {
     expect(res.body.message).toEqual(`"password" is required`);
   });
 
-  test("With existing email", async () => {
+  test("Should get an error for an existing email.", async () => {
     const res = await request(app)
       .post('/api/auth/registration')
       .send({
@@ -74,8 +74,8 @@ describe("Register Route Testing : /api/auth/registration", function () {
   // });
 });
 
-describe("Login Route Testing : /api/auth/login", function () {
-  test('Without Body Credintial', async () => {
+describe("Test suites for Login Route : /api/auth/login", function () {
+  test('Should get an error for missing Body Credintial', async () => {
     const res = await request(app)
       .post('/api/auth/login')
       .send();
@@ -84,7 +84,7 @@ describe("Login Route Testing : /api/auth/login", function () {
     expect(res.body.success).toEqual(false);
   });
 
-  test("With only email", async () => {
+  test("Should get an error for only email in payload.", async () => {
     const res = await request(app)
       .post('/api/auth/login')
       .send({
@@ -95,7 +95,7 @@ describe("Login Route Testing : /api/auth/login", function () {
     expect(res.body.message).toEqual(`"password" is required`);
   });
 
-  test("With only password", async () => {
+  test("Should get an error for only password in payload.", async () => {
     const res = await request(app)
       .post('/api/auth/login')
       .send({
@@ -106,7 +106,7 @@ describe("Login Route Testing : /api/auth/login", function () {
     expect(res.body.message).toEqual(`"email" is required`);
   });
 
-  test("With invalid email", async () => {
+  test("Should get an error for an invalid email", async () => {
     const res = await request(app)
       .post('/api/auth/login')
       .send({
@@ -118,7 +118,7 @@ describe("Login Route Testing : /api/auth/login", function () {
     expect(res.body.message).toEqual(`"email" must be a valid email`);
   });
 
-  test("With wrong password", async () => {
+  test("Should get an error for a wrong password", async () => {
     const res = await request(app)
       .post('/api/auth/login')
       .send({
@@ -130,7 +130,7 @@ describe("Login Route Testing : /api/auth/login", function () {
     expect(res.body.message).toEqual(`Invalid password!`);
   });
 
-  test("With valid credintial", async () => {
+  test("Success with valid credintial", async () => {
     const res = await request(app)
       .post('/api/auth/login')
       .send({
