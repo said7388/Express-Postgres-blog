@@ -3,6 +3,9 @@ import { redis } from "../config/redis.config";
 import app from "../src/app";
 
 const token = process.env.JWT_TOKEN;
+const validPostId = 1;
+const invalidPostId = 2;
+const otherUserPostId = 4;
 
 describe('Test suites for Posts Route :/api/posts', function () {
   test('Get All posts', async function () {
@@ -28,14 +31,14 @@ describe('Test suites for Posts Route :/api/posts', function () {
   });
 
   test("Should get a single post by id.", async function () {
-    const response = await request(app).get('/api/posts/view/1');
+    const response = await request(app).get(`/api/posts/view/${validPostId}`);
     expect(response.status).toBe(200);
     expect(response.body.success).toBeTruthy();
     expect(Object(response.body.data)).toBeTruthy();
   });
 
   test("Should get an error for a non-existing post.", async function () {
-    const response = await request(app).get('/api/posts/view/2');
+    const response = await request(app).get(`/api/posts/view/${invalidPostId}`);
     expect(response.status).toBe(404);
     expect(response.body.success).toBeFalsy();
     expect(response.body.message).toBe("Post not found!");
@@ -90,14 +93,14 @@ describe('Test suites for Posts Route :/api/posts', function () {
   });
 
   test("Should get an error for missing auth token to update a post.", async () => {
-    const res = await request(app).put("/api/posts/update/1");
+    const res = await request(app).put(`/api/posts/update/${validPostId}`);
     expect(res.status).toBe(401);
     expect(res.body.message).toBe("Authentication token missing");
   });
 
   test("Should get an error to update another user post.", async () => {
     const res = await request(app)
-      .put("/api/posts/update/4")
+      .put(`/api/posts/update/${otherUserPostId}`)
       .send({ content: "test post updated" })
       .set("Authorization", `Bearer ${token}`);
 
@@ -108,7 +111,7 @@ describe('Test suites for Posts Route :/api/posts', function () {
 
   test("Should get an error for not found post when try to update.", async () => {
     const res = await request(app)
-      .put("/api/posts/update/2")
+      .put(`/api/posts/update/${invalidPostId}`)
       .send({ content: "test post updated" })
       .set("Authorization", `Bearer ${token}`);
 
@@ -119,7 +122,7 @@ describe('Test suites for Posts Route :/api/posts', function () {
 
   test("Should successfully update a post by authorize user.", async () => {
     const res = await request(app)
-      .put("/api/posts/update/1")
+      .put(`/api/posts/update/${validPostId}`)
       .send({ content: "test post updated" })
       .set("Authorization", `Bearer ${token}`);
 
@@ -130,7 +133,7 @@ describe('Test suites for Posts Route :/api/posts', function () {
 
   test("Should get an error to delete another user post.", async () => {
     const res = await request(app)
-      .delete("/api/posts/delete/4")
+      .delete(`/api/posts/delete/${otherUserPostId}`)
       .set("Authorization", `Bearer ${token}`);
 
     expect(res.status).toBe(401);
@@ -140,7 +143,7 @@ describe('Test suites for Posts Route :/api/posts', function () {
 
   test("Should get an error for not found post when try to delete.", async () => {
     const res = await request(app)
-      .delete("/api/posts/delete/2")
+      .delete(`/api/posts/delete/${invalidPostId}`)
       .set("Authorization", `Bearer ${token}`);
 
     expect(res.status).toBe(404);

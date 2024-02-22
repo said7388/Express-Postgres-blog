@@ -3,6 +3,8 @@ import { redis } from "../config/redis.config";
 import app from "../src/app";
 
 const token = process.env.JWT_TOKEN;
+const validPostId = 1;
+const invalidPostId = 2;
 
 describe("Reaction Router Suite :/api/reactions", () => {
   test("Should get all reactions for a post.", async () => {
@@ -15,7 +17,7 @@ describe("Reaction Router Suite :/api/reactions", () => {
 
   test("Should get error for missing auth token to react a post.", async () => {
     const res = await request(app).put("/api/reactions").send({
-      post_id: 1,
+      post_id: validPostId,
     });
 
     expect(res.status).toBe(401);
@@ -28,9 +30,19 @@ describe("Reaction Router Suite :/api/reactions", () => {
     expect(res.body.message).toBe(`"post_id" is required`);
   });
 
+  test("Should get an error for not existing post.", async () => {
+    const res = await request(app).put("/api/reactions").send({
+      post_id: invalidPostId,
+    }).set('Authorization', `Bearer ${token}`);
+
+    expect(res.body.success).toBeFalsy();
+    expect(res.status).toBe(404);
+    expect(res.body.message).toBe("This post not found!");
+  });
+
   test("Should create or remove a reaction.", async () => {
     const res = await request(app).put("/api/reactions").send({
-      post_id: 1,
+      post_id: validPostId,
     }).set('Authorization', `Bearer ${token}`);
 
     expect(res.body.success).toBeTruthy();
