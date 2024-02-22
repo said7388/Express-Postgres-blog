@@ -1,7 +1,9 @@
 import bcrypt from 'bcrypt';
 import { Request, Response } from "express";
 import jwt from "jsonwebtoken";
+import { v4 } from 'uuid';
 import { connection } from "../../config/db.config";
+import { redis } from '../../config/redis.config';
 
 // Register a new user with secure password.
 export const registrationService = async (req: Request, res: Response) => {
@@ -69,6 +71,65 @@ export const loginService = async (req: Request, res: Response) => {
     });
   } catch (error) {
     console.log(error)
+    return res.status(500).json({
+      success: false,
+      message: "Something went wrong!"
+    });
+  }
+};
+
+// Use redis to cache a value for 5 minutes. In actual app we will use email service to send the verification link.
+export const forgotPasswordService = async (req: Request, res: Response) => {
+  const { email } = req.body;
+
+  try {
+    const sqlQuery = `SELECT * FROM Users WHERE email=$1;`;
+    const result = await connection.query(sqlQuery, [email]);
+    const user = result.rows[0];
+    if (!user) {
+      return res.status(404).json({
+        success: false,
+        message: "User does not exist or invalid email!",
+      });
+    };
+
+    const id = v4();
+    await redis.set(`confirmEmail:${id}`, user.id, 'EX', 60 * 5);
+
+    return res.status(200).json({
+      success: true,
+      url: `${process.env.BACKEND_HOST}/api/auth/confirm/${id}`,
+    });
+  } catch (error) {
+    // console.log(error)
+    return res.status(500).json({
+      success: false,
+      message: "Something went wrong!"
+    });
+  }
+};
+
+// Confirm user email verification link from redis. 
+export const confirmEmailLinkService = async (req: Request, res: Response) => {
+  const { id } = req.params;
+
+  try {
+    const userId = await redis.get(`confirmEmail:${id}`);
+
+    if (!userId) {
+      return res.status(400).json({
+        success: false,
+        message: "Invalid link!"
+      });
+    };
+
+    return res.status(200).json({
+      success: true,
+      userId: userId,
+      message: "Link verified successfully!"
+    })
+  } catch (error) {
+    // console.log(error)
     return res.status(500).json({
       success: false,
       message: "Something went wrong!"

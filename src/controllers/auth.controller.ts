@@ -1,6 +1,6 @@
 import { Request, Response } from "express";
-import { loginService, registrationService } from '../services/auth.service';
-import { loginSchema } from '../validation-schema/auth.schema';
+import { confirmEmailLinkService, forgotPasswordService, loginService, registrationService } from '../services/auth.service';
+import { forgotPasswordSchema, loginSchema } from '../validation-schema/auth.schema';
 
 /**
  * ROUTE: /api/auth/registration
@@ -27,4 +27,32 @@ export const userLogin = async (req: Request, res: Response) => {
   };
 
   return await loginService(req, res);
+};
+
+/**
+ * ROUTE: /api/auth/forgot-password
+ * METHOD: POST
+ * DESC: User forgot password request
+ */
+export const userForgotPassword = async (req: Request, res: Response) => {
+  const { error } = forgotPasswordSchema.validate(req.body);
+
+  if (error) {
+    return res.status(400).json({
+      success: false,
+      message: error.message,
+    })
+  };
+
+  return forgotPasswordService(req, res);
+};
+
+
+/**
+ * ROUTE: /api/auth/confirm/:id
+ * METHOD: GET
+ * DESC: Confirm user email verification link
+ */
+export const confirmEmailLink = async (req: Request, res: Response) => {
+  return confirmEmailLinkService(req, res);
 };
