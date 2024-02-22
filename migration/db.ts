@@ -1,4 +1,8 @@
--- Create 'users' table
+const pg = require('pg');
+const dotenv = require('dotenv');
+dotenv.config();
+
+const createTableQuery = `
 CREATE TABLE IF NOT EXISTS users (
   id SERIAL PRIMARY KEY,
   name VARCHAR(255),
@@ -8,7 +12,6 @@ CREATE TABLE IF NOT EXISTS users (
   updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
 
--- Create 'posts' table
 CREATE TABLE IF NOT EXISTS posts (
   id SERIAL PRIMARY KEY,
   title VARCHAR(255),
@@ -18,7 +21,6 @@ CREATE TABLE IF NOT EXISTS posts (
   updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
 
--- Create 'comments' table
 CREATE TABLE IF NOT EXISTS comments (
   id SERIAL PRIMARY KEY,
   content TEXT,
@@ -28,7 +30,6 @@ CREATE TABLE IF NOT EXISTS comments (
   updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
 
--- Create 'reactions' table
 CREATE TABLE IF NOT EXISTS reactions (
   id SERIAL PRIMARY KEY,
   user_id INT NOT NULL REFERENCES users(id) ON DELETE CASCADE,
@@ -36,3 +37,23 @@ CREATE TABLE IF NOT EXISTS reactions (
   created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
   updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
+`;
+
+const connection = new pg.Pool({
+  host: process.env.DB_HOST,
+  user: process.env.DB_USER,
+  port: process.env.DB_PORT,
+  database: process.env.DB_NAME,
+  password: process.env.DB_PASS,
+})
+
+async function createTable() {
+  try {
+    await connection.query(createTableQuery);
+    console.log("Table created successfully!")
+  } catch (error) {
+    console.log(error);
+  }
+};
+
+createTable();

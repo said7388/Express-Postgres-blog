@@ -8,6 +8,17 @@ export const newReactionService = async (req: Request, res: Response) => {
   const { post_id } = req.body;
 
   try {
+    const findPostQuery = `SELECT * FROM Posts WHERE id = $1;`;
+    const findPostResult = await connection.query(findPostQuery, [post_id]);
+    const findPost = findPostResult.rows[0];
+
+    if (!findPost) {
+      return res.status(404).json({
+        success: false,
+        message: 'This post not found!',
+      });
+    };
+
     const findQuery = `SELECT * FROM Reactions WHERE user_id = $1 AND post_id = $2;`;
     const findResult = await connection.query(findQuery, [user.id, post_id]);
     const reaction = findResult.rows[0];

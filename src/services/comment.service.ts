@@ -46,9 +46,19 @@ export const newCommentService = async (req: Request, res: Response) => {
   const user = req.user as User;
 
   try {
+    const findQuery = `SELECT * FROM Posts WHERE id = $1;`;
+    const findResult = await connection.query(findQuery, [post_id]);
+    const findPost = findResult.rows[0];
+
+    if (!findPost) {
+      return res.status(404).json({
+        success: false,
+        message: 'This post not found!',
+      });
+    };
+
     const query = `INSERT INTO Comments (post_id, content, author_id) VALUES ($1, $2, $3) RETURNING *`;
     const params = [post_id, content, user.id];
-
     const result = await connection.query(query, params);
     const post = result.rows[0];
 
@@ -57,6 +67,7 @@ export const newCommentService = async (req: Request, res: Response) => {
       data: post,
     });
   } catch (error) {
+    console.log(error);
     return res.status(500).json({
       success: false,
       message: 'Something went wrong! Please try again.',

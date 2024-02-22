@@ -15,7 +15,6 @@ const app: Application = express();
 dotenv.config();
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(express.json());
-// app.use(morgan("dev")); // API request logger
 
 // Use Rate limiter for secure server
 const limiter = rateLimit({

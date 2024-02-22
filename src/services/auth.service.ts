@@ -16,6 +16,7 @@ export const registrationService = async (req: Request, res: Response) => {
 
     const token = jwt.sign({ id: user.id, email: user.email }, process.env.JWT_SECRTE as string, { expiresIn: "24h" });
 
+    delete user.password;
     return res.status(201).json({
       success: true,
       message: "User registration successfully!",
@@ -57,6 +58,8 @@ export const loginService = async (req: Request, res: Response) => {
     };
 
     const token = jwt.sign({ id: user.id, email: user.email }, process.env.JWT_SECRTE as string, { expiresIn: "24h" });
+
+    delete user.password;
 
     return res.status(200).json({
       success: true,
