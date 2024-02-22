@@ -1,5 +1,9 @@
 # Blog Application Backend with PostgreSQL
 
+## Frontend Application
+
+Here you will find the simple frontend application: [https://github.com/said7388/next-blog-app](https://github.com/said7388/next-blog-app)
+
 ## Documentation
 
 ### Postman
