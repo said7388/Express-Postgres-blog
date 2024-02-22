@@ -1,4 +1,5 @@
 import bodyParser from 'body-parser';
+import cors from 'cors';
 import dotenv from 'dotenv';
 import express, { Application, Request, Response } from 'express';
 import rateLimit from 'express-rate-limit';
@@ -15,6 +16,7 @@ const app: Application = express();
 dotenv.config();
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(express.json());
+app.use(cors());
 
 // Use Rate limiter for secure server
 const limiter = rateLimit({
