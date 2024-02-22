@@ -1,4 +1,5 @@
 import request from "supertest";
+import { redis } from "../config/redis.config";
 import app from "../src/app";
 
 const token = process.env.JWT_TOKEN;
@@ -34,5 +35,10 @@ describe("Reaction Router Suite :/api/reactions", () => {
 
     expect(res.body.success).toBeTruthy();
     expect(res.status).toBe(200);
+  });
+
+  afterAll(async () => {
+    // Close the Redis connection after all tests have finished
+    await redis.quit();
   });
 });

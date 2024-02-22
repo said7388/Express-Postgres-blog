@@ -1,4 +1,5 @@
 import request from "supertest";
+import { redis } from "../config/redis.config";
 import app from "../src/app";
 
 const token = process.env.JWT_TOKEN;
@@ -100,7 +101,7 @@ describe("Comment Router Suite : /api/comments", () => {
 
   test("Should successfully update a comment by authorize user.", async () => {
     const res = await request(app)
-      .put("/api/comments/update/1")
+      .put("/api/comments/update/9")
       .send({ content: "test comment updated" })
       .set("Authorization", `Bearer ${token}`);
 
@@ -137,4 +138,9 @@ describe("Comment Router Suite : /api/comments", () => {
   //   expect(res.status).toBe(200);
   //   expect(res.body.success).toBeTruthy();
   // });
+
+  afterAll(async () => {
+    // Close the Redis connection after all tests have finished
+    await redis.quit();
+  });
 });

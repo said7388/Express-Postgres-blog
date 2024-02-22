@@ -1,4 +1,5 @@
 import request from "supertest";
+import { redis } from "../config/redis.config";
 import app from "../src/app";
 
 const token = process.env.JWT_TOKEN;
@@ -96,7 +97,7 @@ describe('Test suites for Posts Route :/api/posts', function () {
 
   test("Should get an error to update another user post.", async () => {
     const res = await request(app)
-      .put("/api/posts/update/3")
+      .put("/api/posts/update/4")
       .send({ content: "test post updated" })
       .set("Authorization", `Bearer ${token}`);
 
@@ -129,7 +130,7 @@ describe('Test suites for Posts Route :/api/posts', function () {
 
   test("Should get an error to delete another user post.", async () => {
     const res = await request(app)
-      .delete("/api/posts/delete/3")
+      .delete("/api/posts/delete/4")
       .set("Authorization", `Bearer ${token}`);
 
     expect(res.status).toBe(401);
@@ -145,5 +146,10 @@ describe('Test suites for Posts Route :/api/posts', function () {
     expect(res.status).toBe(404);
     expect(res.body.success).toBeFalsy();
     expect(res.body.message).toBe(`This post not found!`);
+  });
+
+  afterAll(async () => {
+    // Close the Redis connection after all tests have finished
+    await redis.quit();
   });
 });

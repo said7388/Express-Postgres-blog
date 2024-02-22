@@ -16,7 +16,7 @@ export const allPostService = async (req: Request, res: Response) => {
       FROM posts p
       INNER JOIN Users u ON p.author_id = u.id
       WHERE title ILIKE $1
-      ORDER BY id
+      ORDER BY id DESC
       LIMIT $2 OFFSET $3;
     `;
 

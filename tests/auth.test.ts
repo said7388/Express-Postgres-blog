@@ -1,4 +1,5 @@
 import request from "supertest";
+import { redis } from "../config/redis.config";
 import app from "../src/app";
 
 // All test cases for user registration
@@ -142,5 +143,10 @@ describe("Test suites for Login Route : /api/auth/login", function () {
     expect(res.body.success).toEqual(true);
     expect(res.body.message).toEqual(`User login successfully!`);
     expect(res.body.token).toBeDefined();
+  });
+
+  afterAll(async () => {
+    // Close the Redis connection after all tests have finished
+    await redis.quit();
   });
 });

@@ -15,6 +15,7 @@ export const postCommentsService = async (req: Request, res: Response) => {
        FROM Comments c
        INNER JOIN Users u ON c.author_id = u.id
        WHERE post_id = $1 
+       ORDER BY created_at DESC
        LIMIT $2 OFFSET $3;
      `;
     const params: any = [postId, limit, skip];
@@ -29,10 +30,11 @@ export const postCommentsService = async (req: Request, res: Response) => {
       pagination: {
         currentPage: page,
         totalPages: Math.ceil(total as number / Number(limit)),
-        totalIPost: total,
+        total: total,
       },
     });
   } catch (error) {
+    console.log(error)
     return res.status(500).json({
       success: false,
       message: 'Something went wrong! Please try again.',
